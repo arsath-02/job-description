@@ -44,9 +44,6 @@ async def generate_cover_letter(file: UploadFile = File(...)):
     return {"coverLetter": response}
 
 if __name__ == "__main__":
-    import uvicorn
-    from pyngrok import ngrok
-
     # Replace 'your_ngrok_auth_token' with your actual ngrok auth token
     ngrok.set_auth_token("2a1iGE4Q5SDAF4mhdAVXeNptwJd_2GBcW2ACMaj2JoAJy8Gtt")
 
