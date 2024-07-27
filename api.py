@@ -1,25 +1,34 @@
+import numpy as np
 import os
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import PyPDF2
-from pyngrok import ngrok
+import uvicorn
+from fastapi import FastAPI, Body, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+import threading
+import ngrok
+
+
 
 app = FastAPI()
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  
+    allow_credentials=True, 
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 
-# Load your model and tokenizer
+
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-VL-Chat", trust_remote_code=True) 
-llm_model = AutoModelForCausalLM.from_pretrained("sanjay-29-29/GreenAI", trust_remote_code=True, device_map='auto')
+llm_model = AutoModelForCausalLM.from_pretrained("sanjay-29-29/GreenAI", trust_remote_code=True, device_map='auto') 
+history = None
+ngrok.set_auth_token("2a1iGE4Q5SDAF4mhdAVXeNptwJd_2GBcW2ACMaj2JoAJy8Gtt")
+listener = ngrok.forward("127.0.0.1:5000", authtoken_from_env=True, domain="apparent-wolf-obviously.ngrok-free.app")
+
+
 
 @app.post("/generate_cover_letter")
 async def generate_cover_letter(file: UploadFile = File(...)):
@@ -42,13 +51,3 @@ async def generate_cover_letter(file: UploadFile = File(...)):
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     
     return {"coverLetter": response}
-
-if __name__ == "__main__":
-    # Replace 'your_ngrok_auth_token' with your actual ngrok auth token
-    ngrok.set_auth_token("2a1iGE4Q5SDAF4mhdAVXeNptwJd_2GBcW2ACMaj2JoAJy8Gtt")
-
-    # Open a tunnel on port 8000 (the port your FastAPI app is running on)
-    public_url = ngrok.connect(5000)
-    print(f"Public URL: {public_url}")
-
-    uvicorn.run(app, host="0.0.0.0", port=5000)
