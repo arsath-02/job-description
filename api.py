@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import threading
 import ngrok
 
-
+class CoverLetterRequest:
+  coverLetterString: str
 
 app = FastAPI()
 
@@ -51,16 +52,14 @@ async def generate_cover_letter(file: UploadFile = File(...)):
     return {"coverLetter": response}
 
 @app.post("/submit")
-async def submit_cover_letter(data: CoverLetterRequest):
-    cover_letter_string = data.coverLetterString
+async def submit_cover_letter(cover_letter_string: str = Body(...)):
+  if not cover_letter_string:
+    raise HTTPException(status_code=400, detail="No cover letter content provided")
 
-    if not cover_letter_string:
-        raise HTTPException(status_code=400, detail="No cover letter content provided")
-
-    query = "generate a detailed, professional and instantly hirable cover letter for the resume content" + cover_letter_string +"using the details given "
-    response, history = llm_model.chat(tokenizer, query=query, history=None)
-    
-    return {"coverLetter": response}
+  query = "generate a detailed, professional and instantly hirable cover letter for the resume content" + cover_letter_string +"using the details given "
+  response, history = llm_model.chat(tokenizer, query=query, history=None)
+   
+  return {"coverLetter": response}
     
 
 
