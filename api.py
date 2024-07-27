@@ -62,7 +62,6 @@ async def submit_cover_letter(data: CoverLetterRequest):
     
     return {"coverLetter": response}
     
-    return {"coverLetter": cover_letter_string}
 
 
 
