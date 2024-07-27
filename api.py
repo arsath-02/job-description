@@ -51,15 +51,16 @@ async def generate_cover_letter(file: UploadFile = File(...)):
     
     return {"coverLetter": response}
 
-@app.post("/submit")
-async def submit_cover_letter(cover_letter_string: str = Body(...)):
-  if not cover_letter_string:
-    raise HTTPException(status_code=400, detail="No cover letter content provided")
 
-  query = "generate a detailed, professional and instantly hirable cover letter for the resume content" + cover_letter_string +"using the details given "
-  response, history = llm_model.chat(tokenizer, query=query, history=None)
-   
-  return {"coverLetter": response}
+@app.post("/submit")
+async def submit_cover_letter(request: CoverLetterRequest):
+    if not request.coverLetterString:
+        raise HTTPException(status_code=400, detail="No cover letter content provided")
+
+    query = "generate a detailed, professional and instantly hirable cover letter for the resume content " + request.coverLetterString + " using the details given"
+    response, history = llm_model.chat(tokenizer, query=query, history=None)
+
+    return {"coverLetter": response}
     
 
 
