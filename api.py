@@ -46,9 +46,7 @@ async def generate_cover_letter(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Unsupported file type")
     
     query = "generate a detailed, professional and instantly hirable cover letter for the resume content" + text +"using the details given "
-    inputs = tokenizer(query, return_tensors='pt').to('cuda')
-    outputs = llm_model.generate(**inputs, max_length=500, history=history)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    response, history = llm_model.chat(tokenizer, query=query, history=None)
     
     return {"coverLetter": response}
 
