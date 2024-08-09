@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import './Login.css';
 
-function Login({ onFormSwitch, onLogin, loginOrSignIn }) {
+function Login({ onLogin, loginOrSignIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -45,18 +45,22 @@ function Login({ onFormSwitch, onLogin, loginOrSignIn }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
+      console.log('API Response:', data);
       if (response.ok) {
         setMessage('Login successful!');
         setErrors({ email: '', password: '' });
-        localStorage.setItem('token', data.token); // Correctly store token
-        onLogin(); // Call onLogin if passed as a prop
+        localStorage.setItem('token', data.data.token);
+        if (onLogin) {
+          onLogin(); // Ensure this function exists before calling
+        }
         navigate('/home');
       } else {
         setMessage(data.message || 'Login failed. Please try again.');
       }
     } catch (error) {
+      console.error('Error:', error);
       setMessage('An error occurred. Please try again.');
     } finally {
       setLoading(false);

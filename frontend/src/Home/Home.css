@@ -3,31 +3,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f4f4f9;
-  padding: 20px;
+  padding: 10px;
 }
 
 .half-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   overflow: hidden;
   background-color: #ffffff;
+  margin: 0 10px;
 }
 
 @media (min-width: 768px) {
   .half-container {
     flex-direction: row;
+    max-width: 1200px;
   }
 }
 
 .upload-section, .result-section {
   width: 100%;
-  padding: 20px;
+  padding: 15px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -40,9 +42,9 @@
 
 .header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   color: #333;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .main-content {
@@ -53,18 +55,18 @@
 }
 
 .option-icon {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
 }
 
 .btn-option {
-  padding: 10px 20px;
+  padding: 8px 16px;
   background-color: #ff416c;
   border: none;
   border-radius: 5px;
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -79,21 +81,34 @@
 }
 
 .upload-message {
-  margin-top: 20px;
+  margin-top: 15px;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   color: #ff416c;
+}
+.btn-clear {
+  background-color: #f44336; 
+  color: white; 
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.btn-clear:hover {
+  background-color: #d32f2f; 
 }
 
 .result-content {
   width: 100%;
   text-align: left;
-  padding: 20px;
+  padding: 15px;
   background-color: #f0f0f5;
   border-radius: 5px;
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 200px;
 }
 
 .result-content h2 {

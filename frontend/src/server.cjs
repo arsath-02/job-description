@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const multer = require('multer');
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -31,16 +31,15 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-
 // Register new user
 app.post('/auth/sign-up', async (req, res, next) => {
     const { firstname, lastname, email, password, phoneNo } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = new User({ firstname, lastname, email, password: hashedPassword, phoneNo});
+    const newUser = new User({ firstname, lastname, email, password: hashedPassword, phoneNo });
 
     try {
         await newUser.save();
-        const newToken = jwt.sign({ email: email }, "secretkey");
+        const newToken = jwt.sign({ email: email }, 'secretkey'); // Secret key used directly
         res.status(200).json({
             success: true,
             data: {
@@ -61,15 +60,20 @@ app.post('/auth/sign-up', async (req, res, next) => {
 // Authenticate JWT
 const authenticateJWT = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+    console.log('Authorization header:', req.headers.authorization);
+    console.log('Extracted token:', token);
+
     if (token) {
-        jwt.verify(token, "secretkey", (err, user) => {
+        jwt.verify(token, 'secretkey', (err, user) => {
             if (err) {
+                console.log('Token verification error:', err);
                 return res.sendStatus(403); // Forbidden
             }
             req.user = user;
             next();
         });
     } else {
+        console.log('No token provided');
         res.sendStatus(401); // Unauthorized
     }
 };
@@ -92,7 +96,7 @@ app.post('/auth/sign-in', async (req, res, next) => {
         const token = jwt.sign({
             userid: existingUser._id,
             email: existingUser.email
-        }, process.env.JWT_SECRET || 'secretkey', { expiresIn: '1h' });
+        }, 'secretkey'); // Secret key used directly
 
         res.status(200).json({
             success: true,
@@ -102,7 +106,7 @@ app.post('/auth/sign-in', async (req, res, next) => {
                     firstname: existingUser.firstname,
                     lastname: existingUser.lastname,
                     email: existingUser.email,
-                    phonenumber: existingUser.phonenumber
+                    phoneNo: existingUser.phoneNo
                 }
             }
         });
@@ -112,34 +116,3 @@ app.post('/auth/sign-in', async (req, res, next) => {
         next(err);
     }
 });
-
-
-// GET user profile
-app.get('/profile', authenticateJWT, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.userid)
-                               .populate({
-                                   path: 'bookings',
-                                   populate: {
-                                       path: 'turfId',
-                                       model: 'Turf'
-                                   }
-                               });
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
-
-        const { firstname, lastname, email, phonenumber} = user;
-        const userData = { firstname, lastname, email, phonenumber};
-        const data = { ...userData};
-
-        res.status(200).json({
-            success: true,
-            data: data
-        });
-    } catch (err) {
-        res.status(400).json({ success: false, message: 'Error fetching user', error: err.message });
-    }
-});
-

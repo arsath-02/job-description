@@ -42,7 +42,7 @@ function Register() {
       if (response.ok) {
         // Store the JWT token in localStorage
         localStorage.setItem('token', result.token);
-        alert(result.message);
+        alert("Registration successful!");
         navigate('/auth/sign-in');
       } else {
         alert(result.message);

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
@@ -8,56 +8,53 @@ const OptionsPage = () => {
   const [message, setMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [data, setData] = useState(null);
-  const [displayedText, setDisplayedText] = useState(''); 
+  const [displayedText, setDisplayedText] = useState('');
 
   const handleFileChange = async (event) => {
-    await handleUploadClick(event.target.files[0]);
+    const file = event.target.files[0];
+    await handleUploadClick(file);
   };
 
   const handleUploadClick = async (file) => {
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      console.log('Uploading file:', file);
-
-      try {
-        setIsUploading(true);
-        setMessage('Generating response from your resume...');
-
-        const response = await fetch('https://apparent-wolf-obviously.ngrok-free.app/generate_cover_letter', {
-          method: 'POST',
-          body: formData,
-        });
-
-        setIsUploading(false);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Received response:', data);
-          setData(data);
-          setMessage('File uploaded and information extracted successfully.');
-
-          
-          startTypingAnimation(JSON.stringify(data, null, 2));
-        } else {
-          const errorData = await response.json();
-          console.error('Failed to upload file and extract information:', errorData);
-          setMessage('Failed to upload file and extract information.');
-        }
-      } catch (error) {
-        setIsUploading(false);
-        console.error('Error uploading file:', error);
-        setMessage('An error occurred while uploading the file.');
-      }
-    } else {
+    if (!file) {
       setMessage('Please select a file to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setIsUploading(true);
+    setMessage('Uploading and generating response from your resume...');
+
+    try {
+      const analysisResponse = await fetch('https://apparent-wolf-obviously.ngrok-free.app/generate_cover_letter', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!analysisResponse.ok) {
+        const errorData = await analysisResponse.json();
+        throw new Error(`Failed to extract information: ${errorData.message}`);
+      }
+
+      const responseData = await analysisResponse.json();
+      setData(responseData);
+      setMessage('File uploaded and information extracted successfully.');
+      startTypingAnimation(JSON.stringify(responseData, null, 2));
+    } catch (error) {
+      console.error('Error:', error);
+      setMessage('An error occurred while processing the file.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const startTypingAnimation = (text) => {
     let index = 0;
-    setDisplayedText(''); 
+    setDisplayedText('');
+
+    const typingSpeed = 50; // milliseconds
 
     const typingInterval = setInterval(() => {
       if (index < text.length) {
@@ -66,11 +63,23 @@ const OptionsPage = () => {
       } else {
         clearInterval(typingInterval);
       }
-    }, 50); 
+    }, typingSpeed);
   };
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
+  };
+
+  const handleClear = () => {
+    // Reset state variables
+    setMessage('');
+    setIsUploading(false);
+    setData(null);
+    setDisplayedText('');
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -78,13 +87,13 @@ const OptionsPage = () => {
       <div className="half-container">
         <div className="upload-section">
           <header className="header">
-            <h1>Upload your resume.</h1>
+            <h1>Upload your resume</h1>
           </header>
           <main className="main-content">
             <div className="option">
               <img src="upload resume.jpg" alt="Upload Icon" className="option-icon" />
               <h2>Upload Resume</h2>
-              <p>Upload your resume for your job analysis.</p>
+              <p>Upload your resume for analysis.</p>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -93,6 +102,9 @@ const OptionsPage = () => {
               />
               <button onClick={triggerFileInput} className="btn-option" disabled={isUploading}>
                 {isUploading ? 'Uploading...' : 'Upload Resume'}
+              </button>
+              <button onClick={handleClear} className="btn-clear">
+                Clear
               </button>
             </div>
             {message && <div className="upload-message">{message}</div>}
