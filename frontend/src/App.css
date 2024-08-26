@@ -1,0 +1,34 @@
+.navbar {
+    width: 100%;
+    background-color: #ffffff;
+    color: white;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar h1 {
+    margin: 0;
+  }
+  
+  .btn-back {
+    background-color: #fffbfb;
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px 80px;
+    cursor: pointer;
+  }
+  
+  .btn-back:hover {
+    background-color: #777;
+  }
+  
+  .options-page {
+    padding-top: 70px; /* Adjust this padding to the height of the navbar */
+  }
+  

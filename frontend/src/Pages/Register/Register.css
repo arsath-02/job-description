@@ -1,0 +1,119 @@
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.register-container {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensure the container takes the full height of the viewport */
+    margin: 0 auto; /* Center the container horizontally */
+  
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.register-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.register-container input:focus {
+  border-color: #ff416c;
+  outline: none;
+  box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+}
+
+.register-container button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #ff416c;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-container button[type="submit"]:hover {
+  background-color: #ff416c;
+}
+
+.login-link-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.login-link {
+  background: none;
+  border: none;
+  color: #ff416c;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.login-link:hover {
+  color: #005f99;
+}
+
+.login-link:focus {
+  outline: none;
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ensure the container takes the full height of the viewport */
+    margin: 0 auto; /* Center the container horizontally */
+  }
+
+  .register-container h2 {
+    font-size: 20px;
+  }
+
+  .register-container input {
+    font-size: 14px;
+  }
+
+  .register-container button[type="submit"] {
+    font-size: 16px;
+  }
+
+  .login-link-container p {
+    font-size: 14px;
+  }
+  
+}
