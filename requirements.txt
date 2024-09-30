@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+PyPDF2
+transformers
+torch
+python-multipart
+fastapi-middleware
+fastapi-cors
+tiktoken
+transformers_stream_generator
+einops
+ngrok
